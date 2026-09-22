@@ -226,6 +226,21 @@
     border-bottom-right-radius: 14px;
   }
 
+  /*
+   * Horizontal rails (scrollable + tabbable): the global `:focus-visible` outline
+   * wraps the whole scroll box, drawing a hard rectangle around a full row of
+   * glowing cards — exactly the "boxed in" look. Move the same cue onto the cards
+   * so keyboard users still get a visible focus target without the box.
+   * Outlines follow border-radius in modern browsers, so no radius override here.
+   */
+  .neon-rail:focus-visible {
+    outline: none;
+  }
+  .neon-rail:focus-visible > * {
+    outline: 2px solid hsl(var(--neon) / 0.9);
+    outline-offset: 3px;
+  }
+
   /* Light sweep on hover */
   .sheen {
     position: relative;

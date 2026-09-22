@@ -158,7 +158,17 @@ export function Work() {
         />
 
         <Reveal delay={0.06} className="mt-10">
-          <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1" role="tablist" aria-label="Filter projects">
+          {/*
+           * Same clip as the review carousel: `overflow-x-auto` forces `overflow-y: auto`,
+           * so this box clips at its padding edge on every side and would slice the ring +
+           * halo off the active chip. Padding gives the glow room; the negative margins
+           * cancel it so the first chip stays flush with the container edge.
+           */}
+          <div
+            className="no-scrollbar -mx-2 -my-3 flex gap-2 overflow-x-auto px-2 py-3"
+            role="tablist"
+            aria-label="Filter projects"
+          >
             {filters.map((f) => {
               const active = f.id === filter;
               const count = f.id === "all" ? projects.length : projects.filter((p) => p.service === f.id).length;
