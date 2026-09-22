@@ -1,0 +1,367 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================================================================
+   LUPO SIDING — "High Plains Neon" design system
+   Near-black granite canvas · white-neon edge light · flare + glacier accents
+   ========================================================================= */
+
+@layer base {
+  :root {
+    --radius: 0.9rem;
+
+    /* Core surfaces */
+    --background: 220 30% 4%;
+    --foreground: 210 32% 96%;
+
+    --card: 220 26% 6%;
+    --card-foreground: 210 32% 96%;
+
+    --popover: 221 28% 5%;
+    --popover-foreground: 210 32% 96%;
+
+    /* Neon white is the primary action colour */
+    --primary: 0 0% 100%;
+    --primary-foreground: 220 30% 5%;
+
+    --secondary: 220 20% 12%;
+    --secondary-foreground: 210 28% 94%;
+
+    --muted: 220 18% 13%;
+    --muted-foreground: 215 18% 67%;
+
+    --accent: 38 96% 58%;
+    --accent-foreground: 30 45% 8%;
+
+    --destructive: 0 74% 58%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 210 40% 92%;
+    --input: 210 40% 92%;
+    --ring: 0 0% 100%;
+
+    /* Signature hues */
+    --neon: 200 100% 97%;
+    --neon-soft: 205 100% 88%;
+    --neon-dim: 208 40% 62%;
+
+    --flare: 38 96% 58%;
+    --flare-soft: 42 100% 72%;
+
+    --glacier: 202 76% 64%;
+    --glacier-soft: 199 92% 78%;
+
+    --copper: 24 86% 58%;
+    --copper-soft: 30 92% 70%;
+
+    color-scheme: dark;
+  }
+
+  * {
+    border-color: hsl(var(--border) / 0.1);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
+    background-image:
+      radial-gradient(1100px 700px at 78% -12%, hsl(var(--glacier) / 0.14), transparent 62%),
+      radial-gradient(900px 620px at 8% 4%, hsl(var(--flare) / 0.08), transparent 58%),
+      radial-gradient(760px 520px at 50% 108%, hsl(var(--glacier) / 0.07), transparent 60%);
+    background-attachment: fixed;
+    /*
+     * `clip` rather than `hidden`: `overflow-x: hidden` turns the body into a
+     * scroll container, which silently breaks `position: sticky` on the header.
+     * `clip` does not create a scroll container and degrades to `visible` on
+     * older browsers, so sticky keeps working either way.
+     */
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background: hsl(var(--neon) / 0.9);
+    color: hsl(220 30% 5%);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display tracking-tight;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid hsl(var(--neon) / 0.85);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: hsl(220 28% 5%);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(210 20% 22%);
+    border-radius: 999px;
+    border: 2px solid hsl(220 28% 5%);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--glacier) / 0.55);
+  }
+}
+
+@layer components {
+  /* ---------- Signature white-neon edge light ---------- */
+  .neon-edge {
+    position: relative;
+    box-shadow:
+      0 0 0 1px hsl(var(--neon) / 0.42),
+      0 0 12px -3px hsl(var(--glacier) / 0.4),
+      0 0 44px -14px hsl(var(--glacier) / 0.35),
+      inset 0 1px 0 hsl(var(--neon) / 0.1);
+  }
+
+  .neon-edge-strong {
+    position: relative;
+    box-shadow:
+      0 0 0 1px hsl(var(--neon) / 0.72),
+      0 0 18px -2px hsl(var(--glacier) / 0.55),
+      0 0 70px -16px hsl(var(--glacier) / 0.5),
+      inset 0 1px 0 hsl(var(--neon) / 0.18);
+  }
+
+  .neon-edge-flare {
+    box-shadow:
+      0 0 0 1px hsl(var(--flare-soft) / 0.6),
+      0 0 18px -4px hsl(var(--flare) / 0.5),
+      0 0 66px -18px hsl(var(--flare) / 0.42);
+  }
+
+  /* Frosted panel used for every major surface */
+  .glass {
+    background:
+      linear-gradient(160deg, hsl(220 26% 9% / 0.9) 0%, hsl(220 30% 5% / 0.86) 100%);
+    backdrop-filter: blur(18px) saturate(130%);
+  }
+
+  .glass-soft {
+    background: linear-gradient(160deg, hsl(220 26% 10% / 0.62) 0%, hsl(220 30% 5% / 0.6) 100%);
+    backdrop-filter: blur(14px) saturate(120%);
+  }
+
+  /* Rotating conic light that travels around a card border on hover */
+  .neon-trace {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    opacity: 0;
+    transition: opacity 0.45s ease;
+    background: conic-gradient(
+      from var(--trace-angle, 0deg),
+      transparent 0deg,
+      transparent 200deg,
+      hsl(var(--neon) / 0.05) 250deg,
+      hsl(var(--neon) / 0.95) 300deg,
+      hsl(var(--glacier) / 0.6) 322deg,
+      transparent 360deg
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .group:hover .neon-trace,
+  .neon-trace-active .neon-trace {
+    opacity: 1;
+    animation: trace-spin 3.2s linear infinite;
+  }
+
+  /* HUD corner ticks — precision-instrument feel */
+  .hud-corners::before,
+  .hud-corners::after {
+    content: "";
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-color: hsl(var(--neon) / 0.75);
+    pointer-events: none;
+  }
+  /*
+   * Inset at 0 rather than -1px so the ticks survive the `overflow-hidden`
+   * used by NeonPanel and the full-bleed bands, which would otherwise clip them.
+   */
+  .hud-corners::before {
+    top: 0;
+    left: 0;
+    border-top: 1px solid;
+    border-left: 1px solid;
+    border-top-left-radius: 14px;
+  }
+  .hud-corners::after {
+    right: 0;
+    bottom: 0;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+    border-bottom-right-radius: 14px;
+  }
+
+  /* Light sweep on hover */
+  .sheen {
+    position: relative;
+    overflow: hidden;
+  }
+  .sheen::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -60%;
+    width: 40%;
+    background: linear-gradient(100deg, transparent, hsl(var(--neon) / 0.16), transparent);
+    transform: translateX(-120%);
+    transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+  }
+  .sheen:hover::after {
+    transform: translateX(320%);
+  }
+
+  /* ---------- Type treatments ---------- */
+  .neon-text {
+    text-shadow:
+      0 0 14px hsl(var(--neon) / 0.4),
+      0 0 46px hsl(var(--glacier) / 0.34);
+  }
+
+  .neon-text-flare {
+    text-shadow:
+      0 0 16px hsl(var(--flare) / 0.45),
+      0 0 54px hsl(var(--flare) / 0.28);
+  }
+
+  .eyebrow {
+    @apply font-mono text-[11px] font-medium uppercase tracking-[0.34em] text-neon-dim;
+  }
+
+  .gradient-flare {
+    background: linear-gradient(96deg, hsl(var(--neon)) 0%, hsl(var(--flare-soft)) 46%, hsl(var(--glacier-soft)) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .gradient-steel {
+    background: linear-gradient(180deg, hsl(210 40% 99%) 0%, hsl(210 18% 72%) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* ---------- Layout helpers ---------- */
+  .hairline {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, hsl(var(--neon) / 0.3), transparent);
+  }
+
+  .grain::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.4;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.42'/%3E%3C/svg%3E");
+  }
+
+  .text-shadow-none {
+    text-shadow: none;
+  }
+}
+
+@layer utilities {
+  .mask-fade-x {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+  }
+  .mask-fade-b {
+    -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent);
+    mask-image: linear-gradient(to bottom, #000 55%, transparent);
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .perspective {
+    perspective: 1400px;
+  }
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+}
+
+@property --trace-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes trace-spin {
+  to {
+    --trace-angle: 360deg;
+  }
+}
+
+/*
+ * Declared here rather than only in tailwind.config so the keyframes survive
+ * purging: SnowField drives this with per-flake inline styles instead of the
+ * `animate-snowfall` utility.
+ */
+@keyframes snowfall {
+  0% {
+    transform: translate3d(0, -10%, 0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate3d(-6vw, 110vh, 0);
+    opacity: 0;
+  }
+}
+
+/* Honour reduced-motion for every decorative animation */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
