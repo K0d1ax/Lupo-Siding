@@ -146,15 +146,22 @@ export function Testimonials() {
           >
             {testimonials.map((review) => (
               /*
-               * 24rem rather than 25rem: at 400px the three visible cards total 1240px,
-               * which collides with the container at ~1280px viewports and slices the
-               * third card by a few pixels — reads as a rendering bug. At 384px there is
-               * always a clean sliver of the next card, which is the scroll affordance.
+               * Width is exactly one third of the rail minus the two 1.25rem gaps, so
+               * three cards fill it edge to edge and the fourth is fully hidden. A fixed
+               * width can't do this — whatever the rail has left over peeks the next card
+               * — so deriving it from the rail means it can never drift out of step with
+               * the gap. Below lg, three across would be unreadable, so cards fall back to
+               * a phone-friendly fixed width and the rail just shows fewer of them.
+               *
+               * Written as `* 0.333333` rather than `/ 3`: a bare slash in a Tailwind
+               * arbitrary value is parsed as its opacity modifier, which silently drops the
+               * whole class and leaves the peek behind. `(100% - 2.5rem) * 0.333333` is the
+               * same number and compiles.
                */
               <figure
                 key={review.name}
                 data-review-card
-                className="group glass neon-edge relative w-[min(84vw,24rem)] shrink-0 snap-start rounded-2xl p-6"
+                className="group glass neon-edge relative w-[min(84vw,24rem)] shrink-0 snap-start rounded-2xl p-6 lg:w-[calc((100%_-_2.5rem)*0.333333)]"
               >
                 <span className="neon-trace" aria-hidden="true" />
                 <Quote className="size-7 text-neon/25" />
